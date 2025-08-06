@@ -12,8 +12,8 @@ load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY", "")
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY", "")
 EXPECTED_API_KEY = os.getenv("EXPECTED_API_KEY")
-app = FastAPI(prefix="/api/v1")
-
+app = FastAPI()
+router = APIRouter(prefix="/api/v1")
 # Security
 bearer_scheme = HTTPBearer()
 
@@ -115,7 +115,7 @@ def get_answers_from_document(doc_url: str, questions: List[str]) -> List[str]:
     return answer
 
 # Endpoint
-@app.post("/hackrx/run", response_model=HackRxResponse)
+@router.post("/hackrx/run", response_model=HackRxResponse)
 def run_qa(request: HackRxRequest, token: str = Depends(verify_token)):
     answers = get_answers_from_document(request.documents, request.questions)
 
@@ -124,4 +124,5 @@ def run_qa(request: HackRxRequest, token: str = Depends(verify_token)):
         raise HTTPException(status_code=500, detail="Insufficient answers generated.")
 
     return {"answers": answers[:len(request.questions)]}
+
 
