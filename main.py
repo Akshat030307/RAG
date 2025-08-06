@@ -124,6 +124,8 @@ def run_qa(request: HackRxRequest, token: str = Depends(verify_token)):
         raise HTTPException(status_code=500, detail="Insufficient answers generated.")
 
     return {"answers": answers[:len(request.questions)]}
+app.include_router(router)
+
 
 
 
