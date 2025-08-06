@@ -12,7 +12,7 @@ load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY", "")
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY", "")
 EXPECTED_API_KEY = os.getenv("EXPECTED_API_KEY")
-app = FastAPI()
+app = FastAPI(prefix="/api/v1")
 
 # Security
 bearer_scheme = HTTPBearer()
@@ -124,3 +124,4 @@ def run_qa(request: HackRxRequest, token: str = Depends(verify_token)):
         raise HTTPException(status_code=500, detail="Insufficient answers generated.")
 
     return {"answers": answers[:len(request.questions)]}
+
