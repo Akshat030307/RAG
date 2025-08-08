@@ -67,14 +67,13 @@ def get_answers_from_document(doc_url: str, questions: List[str]) -> List[str]:
 # or your model interface
 # System prompt to guide model
     system_prompt = (
-        '''
-    You are a query reformulator for semantic search in official policy documents.  
-Rephrase the users query to match the formal, legal, and policy-oriented language found in such documents.  
-Do not answer the query.  
-Preserve its meaning while adapting vocabulary, tone, and structure to fit the style of insurance or compliance PDFs.
-    '''
+    "You are a semantic query optimizer for document search.\n"
+    "Your job is to take user queries and rephrase them to match the formal and policy-like language "
+    "used in official documents like insurance PDFs.\n"
+    "Only rephrase the query — do NOT answer it.\n"
+    "Your output will be used for similarity search, so preserve the intent but make it look like something "
+    "that could appear inside a policy document."
     )
-
     
 
    
@@ -94,7 +93,7 @@ Preserve its meaning while adapting vocabulary, tone, and structure to fit the s
         context=retr
         query=i
         system_prompt = (
-            f"You are a concise question-answering assistant.Answer the given {query} based on the {context} given to you.Respond in one clear, factual sentence without adding unrelated details. "
+            f"Answer the query{query} based on the {context} given to you.Make it a one liner"
             )
         messages2 = [
             SystemMessage(content=system_prompt)
@@ -125,6 +124,7 @@ def run_qa(request: HackRxRequest, token: str = Depends(verify_token)):
 
     return {"answers": answers[:len(request.questions)]}
 app.include_router(router)
+
 
 
 
