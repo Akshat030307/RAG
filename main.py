@@ -67,13 +67,12 @@ def get_answers_from_document(doc_url: str, questions: List[str]) -> List[str]:
 # or your model interface
 # System prompt to guide model
     system_prompt = (
-    "You are a semantic query optimizer for document search.\n"
-    "Your job is to take user queries and rephrase them to match the formal and policy-like language "
-    "used in official documents like insurance PDFs.\n"
-    "Only rephrase the query — do NOT answer it.\n"
-    "Your output will be used for similarity search, so preserve the intent but make it look like something "
-    "that could appear inside a policy document."
-    )
+    "You are a search query optimizer for formal documents.\n"
+    "Convert user questions into formal document language with relevant keywords and synonyms.\n"
+    "Transform casual terms into official policy language that would appear in insurance documents.\n"
+    "Only rephrase the query using document-appropriate terminology — do NOT answer the question.\n"
+    "Focus on terms that would be found in policy sections, headers, and formal text."
+)
     
 
    
@@ -93,8 +92,19 @@ def get_answers_from_document(doc_url: str, questions: List[str]) -> List[str]:
         context=retr
         query=i
         system_prompt = (
-            f"Answer the query{query} based on the {context} given to you.Make it a one liner"
-            )
+    f"You are a professional document analyst providing accurate information from official documents.\n\n"
+    f"DOCUMENT CONTEXT:\n{context}\n\n"
+    f"USER QUESTION: {query}\n\n"
+    f"RESPONSE GUIDELINES:\n"
+    f"1. Answer ONLY using information from the provided context\n"
+    f"2. If the answer isn't in the context, state: 'This information is not available in the provided document'\n"
+    f"3. Be accurate and specific - quote exact phrases when helpful\n"
+    f"4. Keep responses concise (1-2 sentences) but comprehensive\n"
+    f"5. If multiple relevant details exist, include the most important ones\n"
+    f"6. Use professional, neutral tone\n"
+    f"7. If there are conditions, limitations, or exceptions, mention them\n\n"
+    f"Provide a direct, helpful answer based solely on the document context."
+)
         messages2 = [
             SystemMessage(content=system_prompt)
         ]
@@ -124,6 +134,7 @@ def run_qa(request: HackRxRequest, token: str = Depends(verify_token)):
 
     return {"answers": answers[:len(request.questions)]}
 app.include_router(router)
+
 
 
 
