@@ -67,13 +67,15 @@ def get_answers_from_document(doc_url: str, questions: List[str]) -> List[str]:
 # or your model interface
 # System prompt to guide model
    system_prompt = (
-    "You are a semantic query optimizer for document search.\n"
-    "Your job is to take user queries and rephrase them to match the formal and policy-like language "
-    "used in official documents like insurance PDFs.\n"
-    "Only rephrase the query — do NOT answer it.\n"
-    "Your output will be used for similarity search, so preserve the intent but make it look like something "
-    "that could appear inside a policy document."
-    ) 
+	'''
+    You are a semantic query optimizer for document search.\n
+    Your job is to take user queries and rephrase them to match the formal and policy-like language 
+    used in official documents like insurance PDFs.\n
+    Only rephrase the query — do NOT answer it.\n
+    Your output will be used for similarity search, so preserve the intent but make it look like something 
+    that could appear inside a policy document.
+	'''
+    )
     
 
    
@@ -124,6 +126,7 @@ def run_qa(request: HackRxRequest, token: str = Depends(verify_token)):
 
     return {"answers": answers[:len(request.questions)]}
 app.include_router(router)
+
 
 
 
